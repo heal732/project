@@ -1,0 +1,48 @@
+@charset "EUC-KR";
+
+#bbs_header_wrap{
+	width:100%;
+	height:40px;
+	background: #f2f2f2;
+}
+
+#bbs_content_wrap{
+	width:60%;
+	min-height:1000px;
+	margin:0px auto;
+}
+
+#bbs_content_left{
+	float:left;
+	width:25%;
+	height:100%;
+}
+#bbs_content_right{
+	float:right;
+	width:75%;
+	height:100%;
+}
+.center_do{
+	margin: 0px auto;
+}
+
+#bbs_c_l_wrap{
+	width:200px;
+}
+
+#font-menu{
+	color: black;
+	font-size:20px;
+	width:50%;
+}
+.menu-wrap{
+	width:100%;
+	border-top:1px solid #d9d9d9;
+	float:left;
+}
+.menu-wrap:hover{
+background: #ffedcc;
+}
+.bott{
+	border-bottom:1px solid #d9d9d9;
+}

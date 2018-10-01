@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"      
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.vol.dao.iDao">
+
+<insert id="insertMember">
+insert into member values (mem_seq.nextval,#{param1},#{param2},#{param3},#{param4},#{param5},#{param6},#{param7},'F',#{param8})
+</insert>
+
+<select id="loginMember" resultType="Integer">
+select count(*) from member where mem_id=#{param1} and mem_pw=#{param2}
+</select>
+
+<select id="id_dupe_check" resultType="Integer">
+select count(*) from member where mem_id=#{param1}
+</select>
+
+<select id="selMember" resultType="kr.co.vol.dto.Member">
+select * from member where mem_id=#{param1}
+</select>
+
+<select id="check_pw" resultType="Integer">
+select count(*) from member where mem_pw=#{param1} and mem_id=#{param2}
+</select>
+
+<update id="update_pw">
+update member set mem_pw=#{param1} where mem_id=#{param2} 
+</update>
+
+<update id="update_profile">
+update member set mem_name=#{param2} , mem_email=#{param3} , mem_phone=#{param4} where mem_id=#{param1}
+</update>
+
+<select id="check_email" resultType="String">
+select mem_id from member where mem_email=#{param1}
+</select>
+<select id="check_email2" resultType="Integer">
+select count(*) from member where mem_email=#{param1}
+</select>
+<select id="check_email3" resultType="String">
+select mem_id from member where mem_email=#{param1}
+</select>
+<select id="check_email4" resultType="Integer">
+select count(*) from member where mem_email=#{param1} and mem_id=#{param2}
+</select>
+<select id="search_phone_id" resultType="String">
+select mem_id from member where mem_phone = #{param1}
+</select>
+
+<insert id="insertRegister" parameterType="map">
+insert into register values(reg_seq.nextval, #{register.name}, #{register.phone}, #{register.addr}, #{register.reason},#{register.mem_id})
+</insert>
+
+<insert id="insertParty">
+insert into party values(party_seq.nextval,#{param1},#{param2},#{param3},#{param4},0)
+</insert>
+
+<insert id="write_qna">
+insert into qna values(qna_seq.nextval,#{param1},#{param2},#{param3},0,#{param4},1,null,null)
+</insert>
+<select id="regist_detail" resultType="Integer">
+select count(*) from register where mem_id=#{param1}
+</select>
+
+<select id="getGrade" resultType="String">
+select mem_grade from member where mem_id=#{param1}
+</select>
+
+<select id="dup_Register" resultType="Integer">
+select count(*) from register where mem_id=#{param1}
+</select>
+
+<insert id="insertFav">
+insert into my_fav values(fav_seq.nextval , #{param1} , #{param2})
+</insert>
+<delete id="removeFav">
+delete from my_fav where mem_id=#{param1} and fav=#{param2}
+</delete>
+<select id="getFav" resultType="String">
+select fav from my_fav where mem_id=#{param1}
+</select>
+<select id="checkFav" resultType="Integer">
+select count(*) from my_fav where mem_id=#{param1} and fav=#{param2}
+</select>
+
+<select id="totalComment" resultType="Integer">
+select count(*) from comments where party_id=#{param1}
+</select>
+
+<update id="AddPartyViews">
+update party set views = views+1 where id=#{param1}
+</update>
+
+<insert id="AddPartyComment">
+insert into comments values(partycomment_seq.nextval,#{param1},#{param2},#{param3},#{param4})
+</insert>
+
+<select id="getPartyComment" resultType="kr.co.vol.dto.Comments">
+select * from comments where party_id=#{param1} 
+</select>
+
+<select id="getQnaList" resultType="kr.co.vol.dto.QnA" parameterType="hashmap">
+<![CDATA[
+SELECT * FROM (
+SELECT A.*, 
+ROWNUM AS RNUM FROM (
+ select * from qna
+	where ${col} like '%'||#{word}||'%' and isanswer like '%'||#{isanswer}||'%'
+order by id desc
+) A 
+) WHERE RNUM > #{sno} AND RNUM <= #{eno} 
+]]>	
+</select>
+
+<select id="getTotalQna" resultType="Integer">
+ <![CDATA[
+SELECT count(*) FROM (
+SELECT A.*, 
+ROWNUM AS RNUM FROM (
+
+ select * from qna
+where ${col} like '%'||#{word}||'%' and isanswer like '%'||#{isanswer}||'%'
+) A
+)
+]]>	
+</select>
+
+<select id="qna_detail" resultType="kr.co.vol.dto.QnA">
+select * from qna where id=#{param1}
+</select>
+
+<update id="increse_hit">
+update qna set hit=hit+1 where id=#{param1}
+</update>
+
+<update id="write_qna_anwer">
+update qna set isanswer=2, date_a=#{param2}, content_a=#{param3} where id=#{param1}
+</update>
+
+<insert id="insertQnA">
+insert into qna values (qna_seq.nextval, #{param1}, #{param2}, #{param3}, 0, #{param4}, 1, null, null)
+</insert>
+<update id="update_qna_anwer">
+update qna set date_A=#{param2}, content_A=#{param3} where id=#{param1}
+</update>
+<update id="updateMember">
+update member set mem_pw=#{param1}, mem_name=#{param2}, mem_birth=#{param3}, mem_email=#{param4},mem_phone=#{param5} where mem_id=#{param6}
+
+</update>
+
+
+<!-- <select id="test example"> <![CDATA[ 
+		SELECT * FROM ( SELECT A.*, ROWNUM AS RNUM, COUNT(*) OVER() AS TOTCNT FROM 
+		( select C.id, C.content, C.board_date,C.hit, C.writer_id, C.title, D.name,D.login_id,D.login_pw,D.gender 
+		from Board C, Member D where C.writer_id = D.id and C.title like '%'||#{param3}||'%' 
+		Order by C.id desc ) A ) WHERE RNUM > #{param1} AND RNUM <= #{param2} ]]> 
+		</select> -->
+</mapper>

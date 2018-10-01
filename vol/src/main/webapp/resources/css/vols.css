@@ -1,0 +1,36 @@
+@charset "EUC-KR";
+
+#bbs_header_wrap{
+	width:100%;
+	height:40px;
+	background: #f2f2f2;
+}
+
+#bbs_content_wrap{
+	width:60%;
+	height:auto;
+	min-height:700px;
+	margin:0px auto;
+}
+
+#bbs_content_left{
+	float:left;
+	width:25%;
+	height:700px;
+}
+#bbs_content_right{
+	float:right;
+	width:75%;
+	height:700px;
+}
+.center_do{
+	margin: 0px auto;
+}
+
+#bbs_c_l_wrap{
+	width:200px;
+}
+.datePick{
+	width:80px;
+}
+

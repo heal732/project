@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"      
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.vol.dao.AiDao">
+
+<select id="getTotalMember" resultType="Integer">
+ <![CDATA[
+SELECT count(*) FROM (
+SELECT A.*, 
+ROWNUM AS RNUM FROM (
+
+ select * from member
+ ]]>	
+	<if test="col !=''">
+		where ${col} like '%'||#{word}||'%'
+	</if>
+<![CDATA[
+) A
+)
+]]>	
+</select>
+<select id="getMemberList" resultType="kr.co.vol.dto.Member" parameterType="hashmap">
+<![CDATA[
+SELECT * FROM (
+SELECT A.*, 
+ROWNUM AS RNUM FROM (
+
+ select * from member
+ ]]>	
+	<if test="col !=''">
+		where ${col} like '%'||#{word}||'%'
+	</if>
+<![CDATA[
+order by id desc
+) A 
+) WHERE RNUM > #{sno} AND RNUM <= #{eno} 
+]]>	
+</select>
+<select id="member_detail" parameterType="String" resultType="kr.co.vol.dto.Member">
+ select * from member where mem_id=#{param1}
+</select>
+
+<insert id="write_notice" parameterType="kr.co.vol.dto.Bbs">
+	insert into bbs values (bbs_seq.nextval,#{title},#{type},#{write_date},#{writer},0,#{content})
+	<selectKey keyProperty="id" resultType="Long" order="AFTER"> 
+	SELECT bbs_seq.currval FROM dual 
+	</selectKey> 
+</insert>
+<insert id="write_notice_img">
+	insert into photo values (#{param1},#{param2})
+</insert>
+
+<select id="getTotalBbs" resultType="Integer">
+ <![CDATA[
+SELECT count(*) FROM (
+SELECT A.*, 
+ROWNUM AS RNUM FROM (
+
+ select * from bbs
+ ]]>	
+	<if test="col !=''">
+		where ${col} like '%'||#{word}||'%'
+	</if>
+<![CDATA[
+
+) A where type=#{type}
+) 
+]]>	
+</select>
+
+<select id="getBbsList" resultType="kr.co.vol.dto.Bbs" parameterType="hashmap">
+<![CDATA[
+SELECT * FROM (
+SELECT A.*, 
+ROWNUM AS RNUM FROM (
+
+ select * from bbs
+ ]]>	
+	<if test="col !=''">
+		where ${col} like '%'||#{word}||'%'
+	</if>
+<![CDATA[
+ order by id desc
+) A where type=#{type}
+) WHERE RNUM > #{sno} AND RNUM <= #{eno} 
+]]>	
+</select>
+
+<select id="bbs_detail" resultType="kr.co.vol.dto.Bbs">
+ select * from bbs where id=#{param1}
+</select>
+<update id="increse_views">
+Update bbs set views = views + 1 where id = #{param1} 
+</update>
+<update id="update_bbs">
+Update bbs set title=#{param2}, content=#{param3} , write_date=#{param4} where id=#{param1}
+</update>
+<delete id="delete_bbs">
+delete from bbs where id=#{param1}
+</delete>
+<delete id="delete_img">
+delete from photo where bbs_id=#{param1}
+</delete>
+<select id="getImgList" resultType="String">
+select URL from photo where bbs_id=#{param1}
+</select>
+<select id="getBbsList_And" resultType="kr.co.vol.dto.Bbs">
+ select * from bbs where type=#{param1} order by id desc
+</select>
+<select id="getTotalBbs_And" resultType="Integer">
+SELECT count(*) FROM bbs 
+</select>
+
+<select id="getTotalRegister" resultType="Integer">
+ select count(*) from register	
+</select>
+
+<select id="getRegisterList" parameterType="map" resultType="kr.co.vol.dto.Register">
+<![CDATA[
+SELECT * FROM (
+SELECT A.*, 
+ROWNUM AS RNUM FROM (
+
+ select * from register
+ ]]>	
+
+<![CDATA[
+order by id desc
+) A
+) WHERE RNUM > #{sno} AND RNUM <= #{eno} 
+]]>	
+</select>
+
+<select id="regist_detail" resultType="kr.co.vol.dto.Register">
+select * from register where mem_id=#{param1}
+</select>
+
+<update id="grade_change">
+update member set mem_grade = #{param2} where mem_id=#{param1} 
+</update>
+
+<delete id="del_regist">
+delete from register where mem_id=#{param1}
+</delete>
+
+<select id="getParty_And" resultType="kr.co.vol.dto.Party">
+select * from party order by id desc
+</select>
+
+<update id="AddQnAViews">
+update qna set hit = hit+1 where id=#{param1}
+</update>
+<select id="getCommentList" resultType="kr.co.vol.dto.Comments" parameterType="hashmap">
+<![CDATA[
+SELECT * FROM (
+SELECT A.*, 
+ROWNUM AS RNUM FROM (
+
+ select * from comments
+ ]]>	
+	<if test="col !=''">
+		where ${col} like '%'||#{word}||'%'
+	</if>
+<![CDATA[
+ order by id asc
+) A
+) WHERE RNUM > #{sno} AND RNUM <= #{eno} 
+]]>	
+</select>
+
+
+<insert id="addComment">
+insert into comments values(comments_seq.nextval, #{param1},#{param2},#{param3},#{param4})
+</insert>
+
+
+<delete id="deleteComment">
+delete from comments where id = #{param1}
+</delete>
+
+
+<select id="getCommentCount" resultType="Integer">
+SELECT count(*) FROM comments where party_id = #{param1}
+</select>
+</mapper>
